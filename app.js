@@ -162,7 +162,7 @@
     const show = n => {
       step = n; form.querySelectorAll(".step-f").forEach(s => s.hidden = +s.dataset.step !== n);
       bars.forEach((b, i) => b.classList.toggle("on", i < n)); back.hidden = n === 1;
-      next.innerHTML = (n === 3 ? "See available times" : "Next") + ' <span class="arr" aria-hidden="true">→</span>'; err.textContent = "";
+      next.innerHTML = (n === 3 ? "Send" : "Next") + ' <span class="arr" aria-hidden="true">→</span>'; err.textContent = "";
     };
     const has = n => form.querySelector(`[name="${n}"]:checked`);
     const check = () => {
@@ -181,24 +181,25 @@
       sendLead(); thanks($("#f-name").value);
     });
     function sendLead() {
-      if (!S.leadWebhook) return;
-      const fd = new FormData(form), lead = {};
+            const fd = new FormData(form), lead = {};
       for (const k of new Set(fd.keys())) lead[k] = fd.getAll(k).join(", ");
       lead.program = "Train the Trainer"; lead.submitted_at = new Date().toISOString(); lead.page = location.href;
-      try { fetch(S.leadWebhook, { method: "POST", mode: "no-cors", body: new URLSearchParams(lead), keepalive: true }); } catch (_) {}
+      lead._subject = "New enquiry: Train the Trainer · " + (lead.company || "");
+      lead._template = "table";
+      if (S.formInbox) fetch("https://formsubmit.co/ajax/" + S.formInbox, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(lead), keepalive: true }).catch(() => {});
+      if (S.leadWebhook) fetch(S.leadWebhook, { method: "POST", mode: "no-cors", body: new URLSearchParams(lead), keepalive: true }).catch(() => {});
     }
   }
   function thanks(name) {
     const f = $("#leadform"); if (f) f.hidden = true;
     $("#t-name").textContent = (name || "there").trim().split(" ")[0];
     $("#thanks").hidden = false;
-    if (S.calendlyUrl) {
-      $("#cal").innerHTML = `<div id="cal-widget" style="min-width:280px;height:700px"></div><p class="cal-alt">Calendar not showing? <a href="${esc(S.calendlyUrl)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`;
-      const prefill = { name: ($("#f-name") || {}).value || "", email: ($("#f-email") || {}).value || "" };
-      const start = () => window.Calendly && window.Calendly.initInlineWidget({ url: S.calendlyUrl + "?hide_gdpr_banner=1", parentElement: document.getElementById("cal-widget"), prefill });
-      if (window.Calendly) start();
-      else { const sc = document.createElement("script"); sc.src = "https://assets.calendly.com/assets/external/widget.js"; sc.async = true; sc.onload = start; document.head.appendChild(sc); }
-    }
+    const B = S.bookingUrl;
+    const wa = "https://wa.me/923350560516?text=" + encodeURIComponent("Hi, I just sent an enquiry on your website.");
+    $("#cal").innerHTML = B
+      ? `<iframe src="${esc(B)}${B.includes("?") ? "&" : "?"}gv=true" title="Book a call" style="width:100%;height:640px;border:0;border-radius:12px;background:#fff"></iframe><p class="cal-alt">Calendar not showing? <a href="${esc(B)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`
+      : `<p class="cal-alt" style="text-align:left">We'll call you within one working day to fix a time. Prefer to talk now? <a href="${wa}" target="_blank" rel="noopener">WhatsApp us →</a></p>`;
+    if (!B) { const l = $("#thanks .lede"); if (l) l.textContent = "We have your details."; }
     $("#plan").scrollIntoView({ behavior: "smooth" });
   }
   if (/[?&]thanks/.test(location.search)) thanks("");
