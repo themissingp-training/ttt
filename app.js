@@ -197,9 +197,9 @@
     const B = S.bookingUrl;
     const wa = "https://wa.me/923350560516?text=" + encodeURIComponent("Hi, I just sent an enquiry on your website.");
     $("#cal").innerHTML = B
-      ? `<iframe src="${esc(B)}${B.includes("?") ? "&" : "?"}gv=true" title="Book a call" style="width:100%;height:640px;border:0;border-radius:12px;background:#fff"></iframe><p class="cal-alt">Calendar not showing? <a href="${esc(B)}" target="_blank" rel="noopener">Open it in a new tab →</a></p>`
+      ? `<p class="cal-alt" style="text-align:left">Last step: pick a time for a 30-minute call.</p><p><a class="btn" href="${esc(B)}" target="_blank" rel="noopener">Pick a time on our calendar →</a></p><p class="cal-alt" style="text-align:left">Prefer WhatsApp? <a href="${wa}" target="_blank" rel="noopener">Message us →</a></p>`
       : `<p class="cal-alt" style="text-align:left">We'll call you within one working day to fix a time. Prefer to talk now? <a href="${wa}" target="_blank" rel="noopener">WhatsApp us →</a></p>`;
-    if (!B) { const l = $("#thanks .lede"); if (l) l.textContent = "We have your details."; }
+    { const l = $("#thanks .lede"); if (l) l.textContent = "We have your details."; }
     $("#plan").scrollIntoView({ behavior: "smooth" });
   }
   if (/[?&]thanks/.test(location.search)) thanks("");

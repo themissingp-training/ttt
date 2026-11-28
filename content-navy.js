@@ -21,7 +21,7 @@ window.CONTENT = {
     jotformId:   "",   // from Jotform: the number at the end of your form link. When filled, the Jotform replaces the built-in form.
     leadWebhook: "",   // Google Apps Script / Make.com link: every form entry is sent here (Google Sheet + email alert)
     formInbox:  "themissingp.support@gmail.com",   // every form entry is emailed here
-    bookingUrl: "",   // Google Calendar booking-page link (Appointment schedule); shown after the form
+    bookingUrl: "https://calendar.app.google/1cPLaPYCPXwQADqJ7",   // Google Calendar booking-page link (Appointment schedule); shown after the form
     whatsapp:    "0333-5452389",
     whatsappIntl:"923335452389",   // same number, international format without + (used for the WhatsApp link and QR)
     whatsappText:"Hi The Missing P, I'd like to know more about the Train the Trainer workshop for our team.",
